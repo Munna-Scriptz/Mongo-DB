@@ -2,6 +2,13 @@ const express = require("express");
 const app = express();
 app.use(express.json());
 
+// =================== Mongoose 
+const mongoose = require('mongoose');
+
+mongoose.connect('mongodb+srv://Munna-Scriptz:mLuMYoUT1ZbtakeP@cluster0.1xmbxqk.mongodb.net/Munna-Scriptz?appName=Cluster0')
+  .then(() => console.log('DB Connected!'));
+
+
 // --------------------- Get data only
 app.get("/", (req, res) => {
     res.send("Hello world");
