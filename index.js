@@ -8,6 +8,14 @@ const mongoose = require('mongoose');
 mongoose.connect('mongodb+srv://Munna-Scriptz:mLuMYoUT1ZbtakeP@cluster0.1xmbxqk.mongodb.net/Munna-Scriptz?appName=Cluster0')
   .then(() => console.log('DB Connected!'));
 
+  const userSchema = new mongoose.Schema({
+    email: String,
+    password: String,
+    phone: String,
+  })
+
+  const User = mongoose.model('user', userSchema) //Schema Model 
+
 
 // --------------------- Get data only
 app.get("/", (req, res) => {
@@ -24,6 +32,12 @@ app.post("/register", (req, res) => {
         if (!email) return res.status(401).send("Enter your email");
         if (!password) return res.status(401).send("Enter password");
         if (!phone) return res.status(401).send("Enter your number");
+
+        // ----------------- Send to DB
+
+
+
+
     } catch (error) {
         console.log(error, "error");
     }
