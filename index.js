@@ -34,9 +34,14 @@ app.post("/register", (req, res) => {
         if (!phone) return res.status(401).send("Enter your number");
 
         // ----------------- Send to DB
+        const userData = new User({
+            email,
+            password,
+            phone,
+        })
+        userData.save()
 
-
-
+        res.status(201).send(userData)
 
     } catch (error) {
         console.log(error, "error");
@@ -71,3 +76,4 @@ app.post("/login", (req, res) => {
 app.listen(8000, () => {
     console.log("Server is running");
 });
+
