@@ -1,79 +1,68 @@
-const express = require("express");
-const app = express();
-app.use(express.json());
-
-// =================== Mongoose 
-const mongoose = require('mongoose');
-
+const express = require('express')
+const app = express()
+app.use(express.json())
+// ============================= Mongoose 
+const mongoose = require('mongoose')
 mongoose.connect('mongodb+srv://Munna-Scriptz:mLuMYoUT1ZbtakeP@cluster0.1xmbxqk.mongodb.net/Munna-Scriptz?appName=Cluster0')
-  .then(() => console.log('DB Connected!'));
+    .then(() => console.log('DB Connected!'));
 
-  const userSchema = new mongoose.Schema({
+ const userSchema = new mongoose.Schema({
     email: String,
-    password: String,
     phone: String,
-  })
+    password: String,
+ })
 
-  const User = mongoose.model('user', userSchema) //Schema Model 
+ const User = mongoose.model('user' , userSchema)
 
-
-// --------------------- Get data only
-app.get("/", (req, res) => {
-    res.send("Hello world");
-});
-
-// --------------------- Post data Registration
-app.post("/register", (req, res) => {
-    // ------------- Destructure
-    const { email, password, phone } = req.body;
+// ----------------------- Post Register 
+app.post('/register', (req, res) => {
+    const { email, phone, password } = req.body   //Destructure
 
     try {
-        // ----------------- Validation
-        if (!email) return res.status(401).send("Enter your email");
-        if (!password) return res.status(401).send("Enter password");
-        if (!phone) return res.status(401).send("Enter your number");
+        // ------- Validation 
+        if (!email) return res.status(400).send('Email is required')
+        if (!phone) return res.status(400).send('Phone is required')
+        if (!password) return res.status(400).send('Password is required')
 
-        // ----------------- Send to DB
+        // -------- send to database 
         const userData = new User({
             email,
-            password,
             phone,
+            password,
         })
+
         userData.save()
+        res.send(userData)
 
-        res.status(201).send(userData)
 
-    } catch (error) {
-        console.log(error, "error");
+    } catch (err) {
+        console.log(err, 'Error happened')
     }
 
-    res.send("Register success");
-});
+    // -------- Success 
+    res.status(201).send({ success: 'Registration Successful', details: req.body })
+})
 
-// --------------------- Post data Login
-app.post("/login", (req, res) => {
-    // ------------- Destructure
-    const { email, password } = req.body;
+// ----------------------- Post Register 
+app.post('/login' , async (req, res)=>{
+    const {email , password} = req.body
 
-    try {
-        // ----------------- Validation
-        if (!email) return res.status(401).send("Enter your email");
-        if (!password) return res.status(401).send("Enter password");
+    const userFind = await User.findOne({email})
 
+    // ------ Validation 
+    if(!userFind) return res.status(404).send('User does not exist')
+    if(userFind.password != password) return res.status(404).send('Wrong password')
 
-
-    } catch (error) {
-        console.log('Error', error)
-    }
+    res.status(200).send({success : 'Login successful!', details: req.body})
+})
 
 
 
-
-    // ---------------- Complete 
-    res.send("Login Complete");
-});
-
+// ------------ Server listen 
 app.listen(8000, () => {
-    console.log("Server is running");
-});
+    console.log('Server is running')
+})
 
+
+
+//phone number 01308914951
